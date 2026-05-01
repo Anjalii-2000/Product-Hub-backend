@@ -45,7 +45,8 @@ async function getAllProduct(req, res) {
             filter.category = category;
         }
 
-        const products = await Product.find(filter);
+        const products = await Product.find(filter)
+            .sort({ createdAt: -1 });
 
         return res.status(200).json({
             data: products,

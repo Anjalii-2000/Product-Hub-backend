@@ -147,4 +147,6 @@ async function getMyProducts(req, res) {
 }
 
 
+
+
 module.exports = { createProduct, getAllProduct, getSingleProduct, getSimilarProducts, getMyProducts };

@@ -180,4 +180,64 @@ async function getMe(req, res) {
           });
      }
 }
-module.exports = { createUser, loginUser, getAllUser, deletedUser, getMe };
+
+async function updateProfile(req, res) {
+     try {
+          const userId = req.user.id;
+
+          const { name, password, confirmPassword, phone } = req.body;
+
+          const user = await User.findById(userId);
+
+          if (!user) {
+               return res.status(404).send({
+                    message: "User not found"
+               });
+          }
+
+          if (password && password !== confirmPassword) {
+               return res.status(400).send({
+                    message: "Passwords do not match"
+               });
+          }
+
+          if (name) user.firstName = name;
+
+          if (phone && phone !== user.phone) {
+               const existingPhone = await User.findOne({ phone });
+
+               if (existingPhone) {
+                    return res.status(400).send({
+                         message: "Phone number already in use"
+                    });
+               }
+
+               user.phone = phone;
+          }
+
+          // ✅ update password
+          if (password && password.trim() !== "") {
+               const hashedPassword = await bcrypt.hash(password, 10);
+               user.password = hashedPassword;
+          }
+
+          await user.save();
+
+          return res.status(200).send({
+               message: "Profile updated successfully",
+               user: {
+                    firstName: user.firstName,
+                    email: user.email,
+                    phone: user.phone,
+                    role: user.role
+               }
+          });
+
+     } catch (error) {
+          return res.status(500).send({
+               message: "Server Error",
+               error: error.message
+          });
+     }
+}
+module.exports = { createUser, loginUser, getAllUser, deletedUser, getMe, updateProfile };

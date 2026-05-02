@@ -215,7 +215,6 @@ async function updateProfile(req, res) {
                user.phone = phone;
           }
 
-          // ✅ update password
           if (password && password.trim() !== "") {
                const hashedPassword = await bcrypt.hash(password, 10);
                user.password = hashedPassword;

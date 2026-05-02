@@ -2,6 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 
 const userRouter = require("./routes/user.route");
 const productRouter = require("./routes/product.route");
@@ -9,12 +11,17 @@ const productRouter = require("./routes/product.route");
 const app = express();
 const PORT = 3000;
 
+app.post('/api/upload', upload.single('file'), (req, res) => {
+    res.send("uploaded successfully");
+})
+
 mongoose.connect("mongodb://127.0.0.1:27017/mydb")
     .then(() => console.log("MongoDB connected"))
     .catch(err => console.log(err));
 
 app.use(cors({ origin: "*" }));
 app.use(express.json());
+
 
 app.use("/api", userRouter, productRouter);
 

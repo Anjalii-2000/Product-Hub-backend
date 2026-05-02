@@ -1,13 +1,16 @@
 const Product = require("../models/productSchema.js");
 const mongoose = require("mongoose");
 
-
 async function createProduct(req, res) {
     try {
-        const { productName, price, category, description, image } = req.body;
+        const { productName, price, category, description } = req.body;
 
-        if (!productName || !price || !category || !description || !image) {
+        if (!productName || !price || !category || !description) {
             return res.status(400).json({ message: "Fill all details" });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({ message: "Image is required" });
         }
 
         const userID = req.user.id;
@@ -17,9 +20,11 @@ async function createProduct(req, res) {
             price,
             category,
             description,
-            image,
+            image: req.file.filename,
             seller: userID
         });
+        
+        console.log(req.file, "request file");
 
         return res.status(201).json({
             message: "Product created",
@@ -34,16 +39,12 @@ async function createProduct(req, res) {
     }
 }
 
-
-// GET ALL PRODUCTS
 async function getAllProduct(req, res) {
     try {
         const { category } = req.query;
 
         let filter = {};
-        if (category) {
-            filter.category = category;
-        }
+        if (category) filter.category = category;
 
         const products = await Product.find(filter)
             .sort({ createdAt: -1 });
@@ -52,21 +53,14 @@ async function getAllProduct(req, res) {
             data: products,
             message: products.length === 0
                 ? "No products found"
-                : category
-                    ? `Products fetched for category: ${category}`
-                    : "All products fetched"
+                : "Products fetched"
         });
 
     } catch (error) {
-        return res.status(500).json({
-            message: "Server Error",
-            error: error.message
-        });
+        return res.status(500).json({ message: "Server Error" });
     }
 }
 
-
-// GET SINGLE PRODUCT
 async function getSingleProduct(req, res) {
     try {
         const { id } = req.params;
@@ -87,22 +81,13 @@ async function getSingleProduct(req, res) {
         });
 
     } catch (error) {
-        return res.status(500).json({
-            message: "Server Error",
-            error: error.message
-        });
+        return res.status(500).json({ message: "Server Error" });
     }
 }
 
-
-// GET SIMILAR PRODUCTS
-const getSimilarProducts = async (req, res) => {
+async function getSimilarProducts(req, res) {
     try {
         const { id } = req.params;
-
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ message: "Invalid product ID" });
-        }
 
         const currentProduct = await Product.findById(id);
 
@@ -123,10 +108,8 @@ const getSimilarProducts = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ message: "Server error" });
     }
-};
+}
 
-
-// GET MY PRODUCTS
 async function getMyProducts(req, res) {
     try {
         const sellerId = req.user.id;
@@ -140,14 +123,8 @@ async function getMyProducts(req, res) {
         });
 
     } catch (error) {
-        return res.status(500).json({
-            message: "Server Error",
-            error: error.message
-        });
+        return res.status(500).json({ message: "Server Error" });
     }
 }
-
-
-
 
 module.exports = { createProduct, getAllProduct, getSingleProduct, getSimilarProducts, getMyProducts };

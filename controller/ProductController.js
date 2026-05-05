@@ -3,15 +3,12 @@ const mongoose = require("mongoose");
 
 async function createProduct(req, res) {
     try {
-        const { productName, price, category, description } = req.body;
+        const { productName, price, category, description, image } = req.body;
 
-        if (!productName || !price || !category || !description) {
+        if (!productName || !price || !category || !description || !image) {
             return res.status(400).json({ message: "Fill all details" });
         }
-
-        if (!req.file) {
-            return res.status(400).json({ message: "Image is required" });
-        }
+     
 
         const userID = req.user.id;
 
@@ -20,11 +17,10 @@ async function createProduct(req, res) {
             price,
             category,
             description,
-            image: req.file.filename,
+            image,
             seller: userID
         });
-        
-        console.log(req.file, "request file");
+      
 
         return res.status(201).json({
             message: "Product created",

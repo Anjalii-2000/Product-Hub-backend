@@ -3,24 +3,28 @@ const mongoose = require("mongoose");
 
 async function createProduct(req, res) {
     try {
-        const { productName, price, category, description, image } = req.body;
+        console.log("req.body:", req.body);
+        console.log("req.file:", req.file);
 
-        if (!productName || !price || !category || !description || !image) {
-            return res.status(400).json({ message: "Fill all details" });
+        const { productName, price, category, description } = req.body;
+
+        if (!productName || !price || !category || !description || !req.file) {
+            return res.status(400).json({ message: "Fill all details and upload image" });
         }
-     
 
         const userID = req.user.id;
+        console.log(req.user.id);
 
         const productData = await Product.create({
             productName,
             price,
             category,
             description,
-            image,
+            image: req.file.path, // store path of uploaded file
             seller: userID
         });
-      
+
+        console.log("Product created:", productData);
 
         return res.status(201).json({
             message: "Product created",
@@ -28,6 +32,7 @@ async function createProduct(req, res) {
         });
 
     } catch (error) {
+        console.error("Error creating product:", error);
         return res.status(500).json({
             message: "Server Error",
             error: error.message
@@ -53,6 +58,7 @@ async function getAllProduct(req, res) {
         });
 
     } catch (error) {
+        console.error("Error fetching products:", error);
         return res.status(500).json({ message: "Server Error" });
     }
 }
@@ -77,6 +83,7 @@ async function getSingleProduct(req, res) {
         });
 
     } catch (error) {
+        console.error("Error fetching single product:", error);
         return res.status(500).json({ message: "Server Error" });
     }
 }
@@ -102,6 +109,7 @@ async function getSimilarProducts(req, res) {
         });
 
     } catch (error) {
+        console.error("Error fetching similar products:", error);
         return res.status(500).json({ message: "Server error" });
     }
 }
@@ -119,6 +127,7 @@ async function getMyProducts(req, res) {
         });
 
     } catch (error) {
+        console.error("Error fetching seller products:", error);
         return res.status(500).json({ message: "Server Error" });
     }
 }

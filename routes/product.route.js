@@ -1,13 +1,20 @@
-const express = require("express")
-const { createProduct, getAllProduct, getSingleProduct, getSimilarProducts, getMyProducts } = require("../controller/ProductController.js")
-const Auth = require("../middleware/Auth.js")
-const RoleAuth = require("../middleware/RoleAuth.js")
-const router = express.Router()
+const express = require("express");
+const { createProduct, getAllProduct, getSingleProduct, getSimilarProducts, getMyProducts } = require("../controller/ProductController.js");
+const Auth = require("../middleware/Auth.js");
+const RoleAuth = require("../middleware/RoleAuth.js");
+const upload = require("../middleware/upload.js"); // <--- new
+
+const router = express.Router();
+
+console.log("Product routes loaded");
+
+// Add `upload.single('image')` to handle single image upload
+router.post('/create-product', Auth, RoleAuth("seller"), upload.single('image'), createProduct);
 
 
-router.post('/create-product', Auth, RoleAuth("seller"), createProduct)
-router.get('/getallproduct', getAllProduct)
-router.get('/getproduct/:id', getSingleProduct)
-router.get("/similar-products/:id", getSimilarProducts)
+router.get('/getallproduct', getAllProduct);
+router.get('/getproduct/:id', getSingleProduct);
+router.get("/similar-products/:id", getSimilarProducts);
 router.get("/my-product", Auth, getMyProducts);
+
 module.exports = router;

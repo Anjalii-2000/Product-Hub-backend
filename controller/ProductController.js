@@ -3,36 +3,52 @@ const mongoose = require("mongoose");
 
 async function createProduct(req, res) {
     try {
+
         console.log("req.body:", req.body);
         console.log("req.file:", req.file);
 
+        // ADD THIS
         const { productName, price, category, description } = req.body;
 
-        if (!productName || !price || !category || !description || !req.file) {
-            return res.status(400).json({ message: "Fill all details and upload image" });
+        // VALIDATION
+        if (
+            !productName ||
+            !price ||
+            !category ||
+            !description ||
+            !req.file
+        ) {
+            return res.status(400).json({
+                message: "Fill all details and upload image"
+            });
         }
 
         const userID = req.user.id;
-        console.log(req.user.id);
 
+        console.log("Seller ID:", userID);
+
+        // CREATE PRODUCT
         const productData = await Product.create({
             productName,
             price,
             category,
             description,
-            image: req.file.path, // store path of uploaded file
+            image: `/uploads/${req.file.filename}`,
+
             seller: userID
         });
 
         console.log("Product created:", productData);
 
         return res.status(201).json({
-            message: "Product created",
+            message: "Product created successfully",
             data: productData
         });
 
     } catch (error) {
+
         console.error("Error creating product:", error);
+
         return res.status(500).json({
             message: "Server Error",
             error: error.message
@@ -131,5 +147,7 @@ async function getMyProducts(req, res) {
         return res.status(500).json({ message: "Server Error" });
     }
 }
+
+
 
 module.exports = { createProduct, getAllProduct, getSingleProduct, getSimilarProducts, getMyProducts };

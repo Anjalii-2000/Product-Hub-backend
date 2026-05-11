@@ -11,6 +11,7 @@ router.post('/register', createUser)
 router.post('/login', loginUser)
 router.get("/me", Auth, getMe);
 router.put("/update-profile", Auth, updateProfile);
+router.post("/logout", logoutUser);
 
 
 module.exports = router;

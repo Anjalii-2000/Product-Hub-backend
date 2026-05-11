@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+import cookieParser from "cookie-parser";
 
 
 const userRouter = require("./routes/user.route");
@@ -18,7 +19,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/mydb")
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 
-
+app.use(cookieParser());
 app.use("/api", userRouter, productRouter);
 app.use("/uploads", express.static("uploads"));
 

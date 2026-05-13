@@ -2,32 +2,35 @@ const jwt = require("jsonwebtoken");
 
 function Auth(req, res, next) {
 
-  // GET TOKEN FROM COOKIES
-  const token = req.cookies.token;
+    try {
 
-  if (!token) {
-    return res.status(401).json({
-      message: "No token"
-    });
-  }
+        // GET TOKEN FROM COOKIE
+        const token = req.cookies.token;
 
-  try {
+        // TOKEN NOT FOUND
+        if (!token) {
+            return res.status(401).json({
+                message: "Unauthorized - No token found"
+            });
+        }
 
-    const decoded = jwt.verify(
-      token,
-      process.env.SECRET_KEY
-    );
+        // VERIFY TOKEN
+        const decoded = jwt.verify(
+            token,
+            process.env.SECRET_KEY
+        );
 
-    req.user = decoded; // attach user data
+        // STORE USER DATA IN REQ
+        req.user = decoded;
 
-    next();
+        next();
 
-  } catch (err) {
+    } catch (error) {
 
-    return res.status(401).json({
-      message: "Invalid token"
-    });
-  }
+        return res.status(401).json({
+            message: "Invalid or expired token"
+        });
+    }
 }
 
 module.exports = Auth;

@@ -1,12 +1,8 @@
 function RoleAuth(...allowedRole) {
 
-    console.log(allowedRole);
-
     return function (req, res, next) {
 
-        console.log(req.user);
-
-        // USER NOT FOUND
+        // CHECK USER
         if (!req.user) {
 
             return res.status(401).send({
@@ -14,7 +10,7 @@ function RoleAuth(...allowedRole) {
             });
         }
 
-        // ROLE CHECK
+        // CHECK ROLE
         if (allowedRole.includes(req.user.role)) {
 
             next();

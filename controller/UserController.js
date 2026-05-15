@@ -6,7 +6,7 @@ async function createUser(req, res) {
     try {
 
         const { firstName, email, password, phone, role } = req.body;
-
+    
         if (!firstName || !email || !password || !phone || !role) {
             return res.status(400).send({
                 message: "All fields are required"
@@ -51,7 +51,7 @@ async function createUser(req, res) {
             sameSite: "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
-
+ 
         return res.status(201).send({
             message: "User created successfully",
             user: {

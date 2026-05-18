@@ -1,4 +1,5 @@
 require("dotenv").config();
+console.log(process.env.SECRET_KEY);
 
 const express = require("express");
 const cors = require("cors");

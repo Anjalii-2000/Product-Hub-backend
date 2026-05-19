@@ -58,15 +58,34 @@ async function createProduct(req, res) {
 
 async function getAllProduct(req, res) {
     try {
-        const { category } = req.query;
+        const { category, searchTerm } = req.query;
 
         let filter = {};
-        if (category) filter.category = category;
+        if (category) {
+            filter.category = category;
+        }
 
+        if (searchTerm) {
+            filter.$or = [
+                {
+                    productName: {
+                        $regex: searchTerm,
+                        $options: "i"
+                    }
+                },
+                {
+                    description: {
+                        $regex: searchTerm,
+                        $options: "i"
+                    }
+                }
+            ];
+        }
         const products = await Product.find(filter)
             .sort({ createdAt: -1 });
 
         return res.status(200).json({
+            success: true,
             data: products,
             message: products.length === 0
                 ? "No products found"
@@ -75,7 +94,10 @@ async function getAllProduct(req, res) {
 
     } catch (error) {
         console.error("Error fetching products:", error);
-        return res.status(500).json({ message: "Server Error" });
+        return res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
     }
 }
 

@@ -1,12 +1,6 @@
 const express = require("express");
 
-const {
-    createProduct,
-    getAllProduct,
-    getSingleProduct,
-    getSimilarProducts,
-    getMyProducts
-} = require("../controller/ProductController.js");
+const { createProduct, getAllProduct, getSingleProduct, getSimilarProducts, getMyProducts } = require("../controller/ProductController.js");
 
 const Auth = require("../middleware/Auth.js");
 const RoleAuth = require("../middleware/RoleAuth.js");

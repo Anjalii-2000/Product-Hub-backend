@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { createProduct, getAllProduct, getSingleProduct, getSimilarProducts, getMyProducts } = require("../controller/ProductController.js");
+const { createProduct, getAllProduct, getSingleProduct, getSimilarProducts, getMyProducts, deleteProduct } = require("../controller/ProductController.js");
 
 const Auth = require("../middleware/Auth.js");
 const RoleAuth = require("../middleware/RoleAuth.js");
@@ -28,5 +28,8 @@ router.get("/similar-products/:id", getSimilarProducts);
 
 // GET SELLER PRODUCTS
 router.get("/my-product", Auth, getMyProducts);
+
+// DELETE SELLER PRODUCT
+router.delete("/delete-product/:id", Auth, deleteProduct);
 
 module.exports = router;

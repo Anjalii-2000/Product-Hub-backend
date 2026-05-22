@@ -169,7 +169,44 @@ async function getMyProducts(req, res) {
         return res.status(500).json({ message: "Server Error" });
     }
 }
+async function deleteProduct(req, res) {
+    try {
+
+        const sellerId = req.user.id;
+        const { id } = req.params;
+
+        // 1. Find product first
+        const product = await Product.findById(id);
+
+        if (!product) {
+            return res.status(404).json({
+                message: "Product not found"
+            });
+        }
+
+        // 2. Ensure only owner seller can delete
+        if (product.seller.toString() !== sellerId) {
+            return res.status(403).json({
+                message: "You are not allowed to delete this product"
+            });
+        }
+
+        // 3. Delete product
+        await Product.findByIdAndDelete(id);
+
+        return res.status(200).json({
+            message: "Product deleted successfully"
+        });
+
+    } catch (error) {
+
+        console.error("Error deleting product:", error);
+
+        return res.status(500).json({
+            message: "Server Error"
+        });
+    }
+}
 
 
-
-module.exports = { createProduct, getAllProduct, getSingleProduct, getSimilarProducts, getMyProducts };
+module.exports = { createProduct, getAllProduct, getSingleProduct, getSimilarProducts, getMyProducts, deleteProduct };

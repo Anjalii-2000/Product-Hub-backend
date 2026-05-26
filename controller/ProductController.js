@@ -33,7 +33,7 @@ async function createProduct(req, res) {
             price,
             category,
             description,
-            image: `/uploads/${req.file.filename}`,
+            image: `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`,
 
             seller: userID
         });
@@ -57,6 +57,7 @@ async function createProduct(req, res) {
 }
 
 async function getAllProduct(req, res) {
+    console.log("API hit");
     try {
         const { category, searchTerm } = req.query;
 

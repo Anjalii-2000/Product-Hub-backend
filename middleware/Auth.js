@@ -6,7 +6,9 @@ function Auth(req, res, next) {
 
         // GET TOKEN FROM COOKIE
         const token = req.cookies.token;
-
+        console.log("Cookie:", req.cookies);
+        console.log("Token:", req.cookies.token);
+        
         // TOKEN NOT FOUND
         if (!token) {
             return res.status(401).json({

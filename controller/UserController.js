@@ -2,11 +2,13 @@ const User = require("../models/userSchema.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+
 async function createUser(req, res) {
     try {
 
         const { firstName, email, password, phone, role } = req.body;
-    
+        console.log("Received user data:", req.body);
+
         if (!firstName || !email || !password || !phone || !role) {
             return res.status(400).send({
                 message: "All fields are required"
@@ -23,12 +25,14 @@ async function createUser(req, res) {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
+       
         const userData = await User.create({
             firstName,
             email,
             password: hashedPassword,
             phone,
             role
+           
         });
 
         // JWT TOKEN
@@ -44,14 +48,16 @@ async function createUser(req, res) {
             }
         );
 
-        // STORE TOKEN IN COOKIE
+
+        console.log("Token cookie set");
+
         res.cookie("token", token, {
             httpOnly: true,
-            secure: false, // true in production
+            secure: false,
             sameSite: "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
- 
+
         return res.status(201).send({
             message: "User created successfully",
             user: {
@@ -115,13 +121,15 @@ async function loginUser(req, res) {
             }
         );
 
-        // STORE TOKEN IN COOKIE
+
         res.cookie("token", token, {
             httpOnly: true,
             secure: false, // true in production
             sameSite: "lax",
             maxAge: 24 * 60 * 60 * 1000
         });
+
+        console.log("Token cookie set");
 
         return res.status(200).send({
             message: "Login successful",

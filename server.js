@@ -8,6 +8,7 @@ const cookieParser = require("cookie-parser");
 
 const userRouter = require("./routes/user.route");
 const productRouter = require("./routes/product.route");
+const paymentRouter = require("./routes/paymentRoutes");
 
 const app = express();
 const PORT = 3000;
@@ -17,7 +18,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/mydb")
   .then(() => console.log("MongoDB connected"))
   .catch(console.log);
 
-  
+
 app.use(express.json());
 // CORS
 app.use(cors({
@@ -31,6 +32,7 @@ app.use(cookieParser());
 // Routes
 app.use("/api", userRouter);
 app.use("/api", productRouter);
+app.use("/api/payment", paymentRouter);
 
 app.use("/uploads", express.static("uploads"));
 

@@ -24,15 +24,14 @@ async function createUser(req, res) {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-
-       
+        console.log(hashedPassword);
         const userData = await User.create({
             firstName,
             email,
             password: hashedPassword,
             phone,
             role
-           
+
         });
 
         // JWT TOKEN
@@ -124,7 +123,7 @@ async function loginUser(req, res) {
 
         res.cookie("token", token, {
             httpOnly: true,
-            secure: false, // true in production
+            secure: false, 
             sameSite: "lax",
             maxAge: 24 * 60 * 60 * 1000
         });

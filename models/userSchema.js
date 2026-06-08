@@ -26,20 +26,6 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
-    
-    isPaid: {
-        type: Boolean,
-        default: false,
-    },
-
-    stripePaymentId: {
-        type: String,
-    },
-
-    isVerified: {
-        type: Boolean,
-        default: false,
-    },
 
     role: {
         type: String,
